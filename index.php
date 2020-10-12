@@ -1,63 +1,70 @@
-Accesso alla libreria <br><br>
-Login
+Libreria <br><br>
 
+<a href="../">Torna alla Home</a>
 
+<br><br>
 
-<form name="login" action="login.php" method="POST">
-	<input type="text" name="user">
-	<input type="password" name="passwd">
-<button type="submit" name="submit">Accedi</button>
+Carica un file:
+ <form action="../upload.php" method="POST" enctype="multipart/form-data">
+	<input type="file" name="file">
+	<button type="submit" name="upload">Upload</button>
+	</form>
+
+Cerca un file:
+<form action="../search.php" method="POST">
+	<input type="text" name="search" placeholder="Cerca">
+	<button type="submit" name="submit-search">Cerca</button>
 </form>
 
-<br>
+Cancella un file:
+<form action="../delete.php" method="POST">
+        <input type="text" name="delete" placeholder="Nome libro">
+        <button type="submit" name="submit-earch">Cancella</button>
+</form>
 
-<?php 
 
-//session_start();
-if (isset($_SESSION["login"])) {
-	$logstat = $_SESSION["login"];
+<?php
+
+include '../dbh.php';
+include '../var.php';
+
+
+echo $_SESSION["ID"];
+echo $user;
+
+//Upload
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+if (!isset($_GET['upload'])) {
+	$upload = "";
 } else {
-	$logstat = "";
+	$upload = $_GET['upload'];
 }
 
 
-echo "Login status ".$logstat."<br>";
-
-switch ($logstat) {
-
-	case "":
-		echo "Effettua il login ".$logstat;
-		unset($logstat);
-		break;
-
-	case "unset":
-		echo "Effettua il login ".$logstat;
-		unset($logstat);
-		break;
-
-	case "missing":
-		echo "Login non effettuato: ".$logstat;
-		unset($logstat);
-		break;
-	
-	case "failed":
-		echo "Login fallito, riprova ".$logstat;
-		unset($logstat);
-		break;
-
-	default:
-		echo "";
-		break;
+if ($upload == "success") {
+	echo "<h3>Upload completato <br></h3>";
+} else {
+	echo "";
 }
 
-/*
-if ($login = "failed") {
-	unset($login);
-	echo "Login fallito, riprova";
-} elseif ($login = "missing") {
-	echo "Login non effettuato";
+echo "Upload status: ".$upload;
+//include '../upload.php';
+
+if (!$login = "success") {
+	$_SESSION["login"] = "failed";
+	header("Location: ../index.php?login=failed");
+} else {
+
+$dir = getcwd();
+$searchkey = "";
+//Listing
+echo "<h4> Lista dei libri: <br></h4>";
+include '../list.php';
 }
-*/
 
 
 ?>
